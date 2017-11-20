@@ -1,11 +1,40 @@
 require('dotenv').configure();
 const puppeteer = require('puppeteer');
-var request = require('request');
+var request = require('request-promise');
 var open = require('amqplib').connect(process.env.QUEUE_LOCATION);//'amqp://localhost');
 
 const queueName = process.env.QUEUE_NAME;
 
+var imgSelecter = "";
+var totalSelecter = "";
 const browser = await puppeteer.launch();
+const page = await browser.newPage();
+await page.goto('');
+//Determine total number of pages
+var totalPages = await page.$(totalSelecter);
+for(i=0; i< totalPages; i++) {
+  var imagePath = await page.$(imgSelecter).then(function(handle) {
+      return handle.asElement().getProperty("src");
+  });  
+  //We have the image's path 
+  var options = {
+    uri:'' + "/" + imagePath,
+    headers: {
+      'User-Agent' : 'Request-Promise'
+    },
+    json: true
+  }
+  var img = await request(options).then(function(image) {
+    return image;
+  });
+  
+  //Now throw it off to the service
+
+  //Now we need to grab the next one
+  await page.click(totalSelecter);
+  //Now we are navigating to the next page
+  await page.waitForNavigation();
+}
 
 open.then(function(conn) {
     return conn.createChannel();
@@ -20,7 +49,8 @@ open.then(function(conn) {
     });
   }).catch(console.warn);
 
-var scrape = function(browser, url, chapterExtension , totalExpression, nextExpression, foundImage) {
+
+  var scrape = function(browser, url, chapterExtension , totalExpression, nextExpression, foundImage) {
     const page = await browser.newPage();
     await page.goto(url + chapterExtension);
     
