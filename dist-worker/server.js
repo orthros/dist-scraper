@@ -6,9 +6,25 @@ var open = require('amqplib').connect(process.env.QUEUE_LOCATION);//'amqp://loca
 const queueName = process.env.QUEUE_NAME;
 
 async function main() {
+  //TODO, get the bookNameChapter and baseURL from the message
   const bookNameChapter = '/psyren/146';
   const baseUrl = 'http://www.mangareader.net';
   const onFound = function (img) { console.log('Found one!'); }
+
+  open.then(function (conn) {
+    return conn.createChannel();
+  }).then(function (ch) {
+    return ch.assertQueue(queueName).then(function (ok) {
+      return ch.consume(queueName, function (msg) {
+        if (msg !== null) {
+          // await scrape(baseUrl, bookNameChapter, onFound);
+          ch.ack(msg);
+        }
+      });
+    });
+  }).catch(console.warn);
+
+
   await scrape(baseUrl, bookNameChapter, onFound);
 }
 
