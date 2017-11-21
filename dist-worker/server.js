@@ -31,14 +31,18 @@ async function main() {
 async function getBookID(bookName) {
   const endpoint = process.env.BOOKS_ENDPOINT;
   var options = {
-    method: 'PUT',
-    uri: endpoint + '/books/',
+    method: 'POST',
+    uri: endpoint + '/books',
     headers: {
       'User-Agent': 'Request-Promise'
     },
-    json: true
+    json: true,
+    body: {
+      id: 0,
+      title: bookName
+    }
   };
-  var res = await rp(options, { title: bookName });
+  var res = await rp(options);
   return res;
 }
 
@@ -50,13 +54,13 @@ async function foundImage(bookID, imgNum, img) {
     headers: {
       'User-Agent': 'Request-Promise'
     },
-    json: true
-  };
-  var body = {
-    imageNumber: imgNum,
-    image: img
-  };
-  var img = await rp(options, body).then(function (image) {
+    json: true,
+    body: {
+      imageNumber: imgNum,
+      image: img
+    }
+  }
+  var img = await rp(options).then(function (image) {
     return image;
   });
 }
