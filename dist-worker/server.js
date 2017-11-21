@@ -66,7 +66,7 @@ async function getChapterID(bookID, chapterNumber){
   const endpoint = process.env.BOOKS_ENDPOINT;
   var options = {
     method: 'POST',
-    uri: endpoint + '/books/' + bookID + '/chapters',
+    uri: endpoint + '/chapters/',
     headers: {
       'User-Agent': 'Request-Promise'
     },
@@ -86,7 +86,7 @@ async function foundImage(bookID, chapterId, imgNum, img) {
   const endpoint = process.env.BOOKS_ENDPOINT;
   var options = {
     method: 'POST',
-    uri: endpoint + '/books/' + bookID + '/chapter/' + chapterId + '/pages',
+    uri: endpoint + '/pages',
     headers: {
       'User-Agent': 'Request-Promise'
     },
