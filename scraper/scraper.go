@@ -15,12 +15,14 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func scrape(baseURL string, bookNameChapter string, hook FoundImageHook) {
-	const imgSelecter = "#img"
-	const totalSelecter = "#selectpage"
-	const nextSelecter = "#imgholder > a:nth-child(1)"
-	const totalRegex = `of (\d+)`
+const (
+	imgSelecter   = "#img"
+	totalSelecter = "#selectpage"
+	nextSelecter  = "#imgholder > a:nth-child(1)"
+	totalRegex    = `of (\d+)`
+)
 
+func scrape(baseURL string, bookNameChapter string, hook FoundImageHook) {
 	r := regexp.MustCompile(totalRegex)
 
 	totalPages := 1
