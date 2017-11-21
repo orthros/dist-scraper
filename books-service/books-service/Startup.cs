@@ -28,7 +28,7 @@ namespace books_service
         {
             services.AddSingleton<IDocumentStore>(DocumentStore.For(_ =>
             {
-                _.Connection(Configuration.GetConnectionString(MARTEN_CONNECTION_KEY));
+                _.Connection(Configuration.GetValue<string>(MARTEN_CONNECTION_KEY));
                 _.CreateDatabasesForTenants(c =>
                 {
                     //c.MaintenanceDatabase("");
@@ -41,7 +41,7 @@ namespace books_service
                         {
                             //dbCreated = true;  
                         });
-                });  
+                });
             }));
             services.AddMvc();
         }
