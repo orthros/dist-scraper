@@ -7,6 +7,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"regexp"
+	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/joho/godotenv"
@@ -17,6 +19,9 @@ func scrape(baseURL string, bookNameChapter string, hook FoundImageHook) {
 	const imgSelecter = "#img"
 	const totalSelecter = "#selectpage"
 	const nextSelecter = "#imgholder > a:nth-child(1)"
+	const totalRegex = `of (\d+)`
+
+	r := regexp.MustCompile(totalRegex)
 
 	totalPages := 1
 	nextLocation := baseURL + bookNameChapter
@@ -24,9 +29,9 @@ func scrape(baseURL string, bookNameChapter string, hook FoundImageHook) {
 		doc, err := goquery.NewDocument(nextLocation)
 		failOnError(err, "Could not navigate")
 
-		doc.Find(totalSelecter).First().Each(func(j int, s *goquery.Selection) {
-			//Set the Total pages
-		})
+		matches := r.FindAllString(doc.Find(totalSelecter).First().Text(), -1)
+		totalPages, err = strconv.Atoi(matches[1])
+		failOnError(err, "Could not determine the total pages")
 
 		//Now to the image
 		imagePath, _ := doc.Find(imgSelecter).Attr("src")
