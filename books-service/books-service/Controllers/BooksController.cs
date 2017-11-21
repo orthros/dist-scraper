@@ -22,53 +22,67 @@ namespace books_service.Controllers
 
         // GET: api/Books
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<Book>> Get()
         {
-            return new string[] { "value1", "value2" };
+            using (var session = Store.LightweightSession())
+            {
+                return await session.Query<Book>()
+                                    .ToListAsync();
+            }                
         }
 
         // GET: api/Books/5
         [HttpGet("{id}", Name = "Get")]
-        public Book Get(int id)
+        public async Task<Book> Get(int id)
         {
-            return new Book()
+            using (var session = Store.LightweightSession())
             {
-                Id = id,
-                Title = "value"
-            };
+                return await session.Query<Book>()
+                                    .FirstOrDefaultAsync(x => x.Id == id);
+            }                
         }
 
         // POST: api/Books
         [HttpPost]
-        public int Post([FromBody]Book value)
+        public async Task<int> Post([FromBody]Book value)
         {
             using (var session = Store.OpenSession())
             {
-                var existing = session
+                var existing = await session
                     .Query<Book>()
                     .Where(x => x.Title == value.Title)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
                 if(existing == null)
                 {
-                    existing = new Book() { Title = value.Title };
+                    existing = new Book() { Title = value.Title };                    
                     session.Store(existing);
-                    session.SaveChanges();
+                    await session.SaveChangesAsync();                    
                 }
-
                 return existing.Id;
             }
         }
         
-        // PUT: api/Books/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //// PUT: api/Books/5
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
         
         // DELETE: api/ApiWithActions/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<int> Delete(int id)
         {
+            using (var sess = Store.OpenSession())
+            {
+                var existing = await sess.Query<Book>().FirstOrDefaultAsync(x => x.Id == id);
+                if(existing != null)
+                {
+                    sess.Delete(existing);
+                    await sess.SaveChangesAsync();
+                    return id;
+                }
+            }
+            return -1;
         }
     }
 }
