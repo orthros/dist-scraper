@@ -11,21 +11,54 @@ async function main() {
   const baseUrl = 'http://www.mangareader.net';
   const onFound = function (img) { console.log('Found one!'); }
 
-  open.then(function (conn) {
-    return conn.createChannel();
-  }).then(function (ch) {
-    return ch.assertQueue(queueName).then(function (ok) {
-      return ch.consume(queueName, function (msg) {
-        if (msg !== null) {
-          // await scrape(baseUrl, bookNameChapter, onFound);
-          ch.ack(msg);
-        }
-      });
-    });
-  }).catch(console.warn);
+  // open.then(function (conn) {
+  //   return conn.createChannel();
+  // }).then(function (ch) {
+  //   return ch.assertQueue(queueName).then(function (ok) {
+  //     return ch.consume(queueName, function (msg) {
+  //       if (msg !== null) {
+  //         // await scrape(baseUrl, bookNameChapter, onFound);
+  //         ch.ack(msg);
+  //       }
+  //     });
+  //   });
+  // }).catch(console.warn);
 
-
+  await getBookID('psyren');
   await scrape(baseUrl, bookNameChapter, onFound);
+}
+
+async function getBookID(bookName) {
+  const endpoint = process.env.BOOKS_ENDPOINT;
+  var options = {
+    method: 'PUT',
+    uri: endpoint + '/books/',
+    headers: {
+      'User-Agent': 'Request-Promise'
+    },
+    json: true
+  };
+  var res = await rp(options, { title: bookName });
+  return res;
+}
+
+async function foundImage(bookID, imgNum, img) {
+  const endpoint = process.env.BOOKS_ENDPOINT;
+  var options = {
+    method: 'POST',
+    uri: endpoint + '/books/' + bookID + '/images',
+    headers: {
+      'User-Agent': 'Request-Promise'
+    },
+    json: true
+  };
+  var body = {
+    imageNumber: imgNum,
+    image: img
+  };
+  var img = await rp(options, body).then(function (image) {
+    return image;
+  });
 }
 
 async function scrape(baseUrl, bookNameChapter, onFound) {
@@ -67,34 +100,3 @@ async function scrape(baseUrl, bookNameChapter, onFound) {
 }
 
 main();
-// open.then(function (conn) {
-//   return conn.createChannel();
-// }).then(function (ch) {
-//   return ch.assertQueue(queueName).then(function (ok) {
-//     return ch.consume(queueName, function (msg) {
-//       if (msg !== null) {
-//         console.log(msg.content.toString());
-//         ch.ack(msg);
-//       }
-//     });
-//   });
-// }).catch(console.warn);
-
-
-// var scrape = function (browser, url, chapterExtension, totalExpression, nextExpression, foundImage) {
-//   const page = await browser.newPage();
-//   await page.goto(url + chapterExtension);
-
-//   //We are at the root for our page, find the image
-//   //download it to memory
-//   //call the "foundImage" function
-//   //foundImage(img);
-//   //Move to the next
-
-//   await browser.close();
-// }
-
-// var foundImage = function (bookID, img, pageNum) {
-//   const url = process.env.BOOKS_ENDPOINT;
-//   request.post(url + 'books/' + bookID + '/pages', { form: { image: img, pageNumber: pageNum } });
-// }
