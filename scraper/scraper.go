@@ -22,6 +22,11 @@ const (
 	totalRegex    = `of (\d+)`
 )
 
+const (
+	rabbitMQServerKey = "QUEUE_LOCATION"
+	rabbitMQQueueKey  = "QUEUE_NAME"
+)
+
 func scrape(baseURL string, bookNameChapter string, hook FoundImageHook) {
 	r := regexp.MustCompile(totalRegex)
 
@@ -71,8 +76,8 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	rabbitmqServer := os.Getenv("QUEUE_LOCATION")
-	queueName := os.Getenv("QUEUE_NAME")
+	rabbitmqServer := os.Getenv(rabbitMQServerKey)
+	queueName := os.Getenv(rabbitMQQueueKey)
 
 	conn, err := amqp.Dial(rabbitmqServer)
 	failOnError(err, "Failed to connect to RabbitMQ")
@@ -122,7 +127,14 @@ func main() {
 			}
 
 			//Todo: make this the non void one
-			foundImageHook := &VoidFoundImageHook{}
+			//foundImageHook := &VoidFoundImageHook{}
+
+			bookService := NewBookService()
+
+			bookID := bookService.getBookID(message.BookName)
+			chapterID := bookService.getChapterID(bookID, message.ChapterNumber)
+
+			foundImageHook := NewServiceFoundImageHook(bookService, chapterID)
 
 			//Combine the two to get viable starting URL
 			bookNameChapter := message.BookName + "/" + string(message.ChapterNumber)

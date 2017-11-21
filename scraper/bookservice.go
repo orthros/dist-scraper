@@ -10,6 +10,10 @@ import (
 	"os"
 )
 
+const (
+	endpointKey = "BOOKS_ENDPOINT"
+)
+
 type Book struct {
 	ID    int
 	Title string
@@ -40,7 +44,7 @@ type BookService struct {
 }
 
 func NewBookService() BookService {
-	endpoint := os.Getenv("BOOKS_ENDPOINT")
+	endpoint := os.Getenv(endpointKey)
 	return BookService{
 		endpoint: endpoint,
 	}
