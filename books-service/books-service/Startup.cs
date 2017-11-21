@@ -29,7 +29,7 @@ namespace books_service
             services.AddSingleton<IDocumentStore>(DocumentStore.For(_ =>
             {
                 //_.Connection(Configuration.GetConnectionString(MARTEN_CONNECTION_KEY));
-                _.Connection("host=localhost;port=32774;database=marten_test;username=postgres");
+                _.Connection("host=localhost;port=32772;database=marten_test;username=postgres");
                 _.CreateDatabasesForTenants(c =>
                 {
                     //c.MaintenanceDatabase("");

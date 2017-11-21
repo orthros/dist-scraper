@@ -61,6 +61,24 @@ namespace books_service.Controllers
                 return existing.Id;
             }
         }
+
+        [HttpPost("{id}/pages")]
+        public async Task<bool> AddPage(int id, [FromBody]Page page)
+        {
+            using (var session = Store.OpenSession())
+            {
+                var existingBook = await session.Query<Book>().FirstOrDefaultAsync(x => x.Id == id);
+                if(existingBook == null) { return false; }
+                session.Store<Page>(new Page()
+                {
+                    Data = page.Data,
+                    BookID = existingBook.Id,
+                    PageNumber = page.PageNumber
+                });
+                await session.SaveChangesAsync();
+                return true;
+            }
+        }
         
         //// PUT: api/Books/5
         //[HttpPut("{id}")]
@@ -77,6 +95,9 @@ namespace books_service.Controllers
                 var existing = await sess.Query<Book>().FirstOrDefaultAsync(x => x.Id == id);
                 if(existing != null)
                 {
+                    //Delete the pages
+                    sess.DeleteWhere<Page>(page => page.BookID == existing.Id);
+                    //Delete the book
                     sess.Delete(existing);
                     await sess.SaveChangesAsync();
                     return id;
