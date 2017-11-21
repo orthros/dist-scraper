@@ -9,7 +9,7 @@ namespace books_service.Models
     {
         public int Id { get; set; }
         public int BookID { get; set; }
-        public byte[] Data { get; set; }
         public int PageNumber { get; set; }
+        public byte[] Data { get; set; }
     }
 }
