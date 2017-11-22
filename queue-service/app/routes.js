@@ -40,7 +40,7 @@ module.exports = function (app, ch, queueName) {
         ch.sendToQueue(queueName, new Buffer(message), {
             persistent: true
         });
-        res.status(200)
+        res.status(200).json();
     })
 
     // frontend routes =========================================================
