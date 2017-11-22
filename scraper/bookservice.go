@@ -58,15 +58,17 @@ func (service BookService) getBookID(bookName string) int {
 	jsonPage, err := json.Marshal(targetBook)
 	failOnError(err, "Unable to marshal Book to json")
 
-	resp, err := http.Post(service.endpoint+"/books", "applicaiton/json", bytes.NewBuffer(jsonPage))
+	resp, err := http.Post(service.endpoint+"/books", "application/json", bytes.NewBuffer(jsonPage))
 	failOnError(err, "Couldn't get to endpoint")
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	failOnError(err, "Error reading response body")
 
-	data := binary.BigEndian.Uint64(body)
-	return int(data)
+	var dta float64
+	err = json.Unmarshal(body, &dta)
+	log.Print(dta)
+	return int(dta)
 }
 
 func (service BookService) getChapterID(bookID int, chapterNumber int) int {
@@ -79,7 +81,7 @@ func (service BookService) getChapterID(bookID int, chapterNumber int) int {
 	jsonBook, err := json.Marshal(targetChapter)
 	failOnError(err, "Unable to marshal Chapter to json")
 
-	resp, err := http.Post(service.endpoint+"/chapters", "applicaiton/json", bytes.NewBuffer(jsonBook))
+	resp, err := http.Post(service.endpoint+"/chapters", "application/json", bytes.NewBuffer(jsonBook))
 	failOnError(err, "Couldn't get to endpoint")
 	defer resp.Body.Close()
 
@@ -100,7 +102,7 @@ func (service BookService) postImage(chapterID int, pageNumber int, pageData []b
 	jsonPage, err := json.Marshal(targetPage)
 	failOnError(err, "Unable to marshal Book to json")
 
-	resp, err := http.Post(service.endpoint+"/pages", "applicaiton/json", bytes.NewBuffer(jsonPage))
+	resp, err := http.Post(service.endpoint+"/pages", "application/json", bytes.NewBuffer(jsonPage))
 	failOnError(err, "Couldn't get to endpoint")
 	defer resp.Body.Close()
 
