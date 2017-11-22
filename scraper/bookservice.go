@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/binary"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -67,7 +66,7 @@ func (service BookService) getBookID(bookName string) int {
 
 	var dta float64
 	err = json.Unmarshal(body, &dta)
-	log.Print(dta)
+
 	return int(dta)
 }
 
@@ -88,8 +87,10 @@ func (service BookService) getChapterID(bookID int, chapterNumber int) int {
 	body, err := ioutil.ReadAll(resp.Body)
 	failOnError(err, "Error reading response body")
 
-	data := binary.BigEndian.Uint64(body)
-	return int(data)
+	var dta float64
+	err = json.Unmarshal(body, &dta)
+
+	return int(dta)
 }
 
 func (service BookService) postImage(chapterID int, pageNumber int, pageData []byte) {
