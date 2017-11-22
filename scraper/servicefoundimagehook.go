@@ -1,12 +1,12 @@
 package main
 
 type serviceFoundImageHook struct {
-	Service   BookService
+	Service   bookService
 	ChapterID int
 }
 
 func newServiceFoundImageHook(bookName string, chapterNumber int) serviceFoundImageHook {
-	bookService := NewBookService()
+	bookService := newBookService()
 
 	bookID := bookService.getBookID(bookName)
 	chapterID := bookService.getChapterID(bookID, chapterNumber)

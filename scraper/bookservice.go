@@ -32,18 +32,18 @@ type Page struct {
 	Data       []byte
 }
 
-type BookService struct {
+type bookService struct {
 	endpoint string
 }
 
-func NewBookService() BookService {
+func newBookService() bookService {
 	endpoint := os.Getenv(endpointKey)
-	return BookService{
+	return bookService{
 		endpoint: endpoint,
 	}
 }
 
-func (service BookService) getBookID(bookName string) int {
+func (service bookService) getBookID(bookName string) int {
 	targetBook := &Book{
 		ID:    0,
 		Title: bookName,
@@ -64,7 +64,7 @@ func (service BookService) getBookID(bookName string) int {
 	return int(dta)
 }
 
-func (service BookService) getChapterID(bookID int, chapterNumber int) int {
+func (service bookService) getChapterID(bookID int, chapterNumber int) int {
 	targetChapter := &Chapter{
 		ID:            0,
 		ChapterTitle:  "",
@@ -87,7 +87,7 @@ func (service BookService) getChapterID(bookID int, chapterNumber int) int {
 	return int(dta)
 }
 
-func (service BookService) postImage(chapterID int, pageNumber int, pageData []byte) {
+func (service bookService) postImage(chapterID int, pageNumber int, pageData []byte) {
 	targetPage := &Page{
 		ID:         0,
 		ChapterID:  chapterID,
