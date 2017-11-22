@@ -5,9 +5,14 @@ type ServiceFoundImageHook struct {
 	ChapterID int
 }
 
-func NewServiceFoundImageHook(service BookService, chapterID int) ServiceFoundImageHook {
+func NewServiceFoundImageHook(bookName string, chapterNumber int) ServiceFoundImageHook {
+	bookService := NewBookService()
+
+	bookID := bookService.getBookID(bookName)
+	chapterID := bookService.getChapterID(bookID, chapterNumber)
+
 	hook := ServiceFoundImageHook{
-		Service:   service,
+		Service:   bookService,
 		ChapterID: chapterID,
 	}
 	return hook
