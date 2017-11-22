@@ -129,7 +129,7 @@ func main() {
 
 			//Todo: make this the non void one
 			//foundImageHook := &VoidFoundImageHook{}
-			foundImageHook := NewServiceFoundImageHook(message.BookName, message.ChapterNumber)
+			foundImageHook := newServiceFoundImageHook(message.BookName, message.ChapterNumber)
 
 			//Combine the two to get viable starting URL
 			bookNameChapter := strings.ToLower(message.BookName + "/" + strconv.Itoa(message.ChapterNumber))

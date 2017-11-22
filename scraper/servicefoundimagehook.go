@@ -1,23 +1,23 @@
 package main
 
-type ServiceFoundImageHook struct {
+type serviceFoundImageHook struct {
 	Service   BookService
 	ChapterID int
 }
 
-func NewServiceFoundImageHook(bookName string, chapterNumber int) ServiceFoundImageHook {
+func newServiceFoundImageHook(bookName string, chapterNumber int) serviceFoundImageHook {
 	bookService := NewBookService()
 
 	bookID := bookService.getBookID(bookName)
 	chapterID := bookService.getChapterID(bookID, chapterNumber)
 
-	hook := ServiceFoundImageHook{
+	hook := serviceFoundImageHook{
 		Service:   bookService,
 		ChapterID: chapterID,
 	}
 	return hook
 }
 
-func (sfih ServiceFoundImageHook) found(pageNum int, data []byte) {
+func (sfih serviceFoundImageHook) found(pageNum int, data []byte) {
 	sfih.Service.postImage(sfih.ChapterID, pageNum, data)
 }
