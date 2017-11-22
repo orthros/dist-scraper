@@ -110,5 +110,5 @@ func (service BookService) postImage(chapterID int, pageNumber int, pageData []b
 	body, err := ioutil.ReadAll(resp.Body)
 	failOnError(err, "Error reading response body")
 
-	log.Printf("Got some data %s", body)
+	log.Printf("Posted image and got response: %s", body)
 }
