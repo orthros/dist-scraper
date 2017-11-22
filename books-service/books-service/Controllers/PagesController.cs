@@ -27,6 +27,17 @@ namespace books_service.Controllers
             }
         }
 
+        [HttpGet("{pageID}/view")]
+        public async Task<FileResult> ViewPage(int pageID)
+        {
+            using (var session = Store.LightweightSession())
+            {
+                var page = await session.Query<Page>().FirstOrDefaultAsync(x => x.Id == pageID);
+                if (page == null) { return null; }
+                return File(page.Data, "image/jpeg");
+            }
+        }
+
         [HttpPost]
         public async Task<bool> AddPage([FromBody]Page page)
         {
