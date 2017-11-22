@@ -9,6 +9,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/joho/godotenv"
@@ -31,7 +32,7 @@ func scrape(baseURL string, bookNameChapter string, hook FoundImageHook) {
 	r := regexp.MustCompile(totalRegex)
 
 	totalPages := 1
-	nextLocation := baseURL + bookNameChapter
+	nextLocation := baseURL + "/" + bookNameChapter
 	for i := 0; i < totalPages; i++ {
 		doc, err := goquery.NewDocument(nextLocation)
 		failOnError(err, "Could not navigate")
@@ -137,7 +138,7 @@ func main() {
 			foundImageHook := NewServiceFoundImageHook(bookService, chapterID)
 
 			//Combine the two to get viable starting URL
-			bookNameChapter := message.BookName + "/" + string(message.ChapterNumber)
+			bookNameChapter := strings.ToLower(message.BookName + "/" + strconv.Itoa(message.ChapterNumber))
 
 			//Begin the scraping
 			scrape(message.BaseUrl, bookNameChapter, foundImageHook)
