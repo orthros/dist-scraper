@@ -57,14 +57,19 @@ namespace books_service.Controllers
                 {
                     foundChapter = new Chapter()
                     {
-                        BookID = chapter.Id,
-                        ChapterNumber = chapter.ChapterNumber,
-                        ChapterTitle = chapter.ChapterTitle
                     };
                     session.Store(foundChapter);
 
-                    await session.SaveChangesAsync();
                 }
+
+                foundChapter.BookID = chapter.BookID;
+                foundChapter.ChapterNumber = chapter.ChapterNumber;
+                foundChapter.ChapterTitle = chapter.ChapterTitle;
+
+                session.Update(foundChapter);
+
+                await session.SaveChangesAsync();
+
                 return foundChapter.Id;
             }
         }
