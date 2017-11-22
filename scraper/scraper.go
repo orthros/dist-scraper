@@ -128,7 +128,7 @@ func main() {
 			}
 
 			//Todo: make this the non void one
-			//foundImageHook := &VoidFoundImageHook{}
+			// foundImageHook := &voidFoundImageHook{}
 			foundImageHook := newServiceFoundImageHook(message.BookName, message.ChapterNumber)
 
 			//Combine the two to get viable starting URL

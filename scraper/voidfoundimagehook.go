@@ -2,9 +2,9 @@ package main
 
 import "log"
 
-type VoidFoundImageHook struct {
+type voidFoundImageHook struct {
 }
 
-func (vfih VoidFoundImageHook) found(pageNum int, data []byte) {
+func (vfih voidFoundImageHook) found(pageNum int, data []byte) {
 	log.Printf("Found an image")
 }
