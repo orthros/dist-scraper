@@ -20,7 +20,7 @@ const (
 	imgSelecter   = "#img"
 	totalSelecter = "#selectpage"
 	nextSelecter  = "#imgholder > a:nth-child(1)"
-	totalRegex    = `of (\d+)`
+	totalRegex    = `of (?P<num>\d+)`
 )
 
 const (
@@ -37,7 +37,7 @@ func scrape(baseURL string, bookNameChapter string, hook FoundImageHook) {
 		doc, err := goquery.NewDocument(nextLocation)
 		failOnError(err, "Could not navigate")
 
-		matches := r.FindAllString(doc.Find(totalSelecter).First().Text(), -1)
+		matches := r.FindStringSubmatch(doc.Find(totalSelecter).First().Text())
 		totalPages, err = strconv.Atoi(matches[1])
 		failOnError(err, "Could not determine the total pages")
 
