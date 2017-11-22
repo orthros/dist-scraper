@@ -32,12 +32,6 @@ type Page struct {
 	Data       []byte
 }
 
-type Message struct {
-	BaseUrl       string
-	BookName      string
-	ChapterNumber int
-}
-
 type BookService struct {
 	endpoint string
 }
