@@ -1,7 +1,7 @@
 package main
 
 type Message struct {
-	BaseUrl       string
+	BaseURL       string
 	BookName      string
 	ChapterNumber int
 }

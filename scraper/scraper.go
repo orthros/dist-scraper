@@ -135,7 +135,7 @@ func main() {
 			bookNameChapter := strings.ToLower(message.BookName + "/" + strconv.Itoa(message.ChapterNumber))
 
 			//Begin the scraping
-			scrape(message.BaseUrl, bookNameChapter, foundImageHook)
+			scrape(message.BaseURL, bookNameChapter, foundImageHook)
 
 			//Done scraping, log and ack
 			log.Printf("Done")
