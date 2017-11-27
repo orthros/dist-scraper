@@ -1,7 +1,9 @@
 # Docker image for the display-incrementer
 
 # Use the golang image to compile our application
-FROM golang:latest as builder
+FROM golang:alpine as builder
+
+RUN apk add --no-cache git
 
 WORKDIR /go/src/app
 COPY ./ /go/src/app
